@@ -12,9 +12,6 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="{{ asset('js/main.js') }}" defer></script>
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -22,12 +19,11 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 </head>
 
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white">
+        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
@@ -83,41 +79,10 @@
             </div>
         </nav>
 
-        <div class="navigation">
-            <ul>
-                <li class="list {{ Request::is('home') ? 'active' : '' }}">
-                    <b></b>
-                    <a href="{{route('home')}}">
-                        <span class="icon">
-                            <ion-icon name="home-outline"></ion-icon>
-                        </span>
-                        <span class="title">Home</span>
-                    </a>
-                </li>
-                <li class="list {{ Request::is('add') ? 'active' : '' }}">
-                    <b></b>
-                    <a href="{{route('add_question')}}">
-                        <span class="icon">
-                            <ion-icon name="person-outline"></ion-icon>
-                        </span>
-                        <span class="title">Agregar pregunta</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        <div class="toggle">
-            <ion-icon name="menu-outline" class="open"></ion-icon>
-            <ion-icon name="close-outline" class="close"></ion-icon>
-        </div>
-
         <main class="py-4">
-            <div class="container">
-                @yield('content')
-            </div>
+            @yield('content')
         </main>
     </div>
-
 </body>
 
 </html>

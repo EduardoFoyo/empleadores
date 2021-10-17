@@ -1,11 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
 @section('content')
 
 
 
 <div class="container">
-    {{-- Hacer solo modificaciones en esta parte del codigo todo dentro de aqui es la pagina menos la barra de navegacion--}}
+    {{-- Hacer solo modificaciones en esta parte del codigo todo dentro de aqui es la pagina menos la barra de
+    navegacion--}}
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
