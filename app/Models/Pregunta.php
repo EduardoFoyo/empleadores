@@ -13,7 +13,6 @@ class Pregunta extends Model
     protected $connection = 'mysql';
     public $timestamps = false;
     public $incrementing = false;
-    
 
     protected $fillable = [
         'id_area',

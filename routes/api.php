@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('/lista/pregunta', [App\Http\Controllers\ApiRestController::class, 'listaPregunta'])->name('lista_pregunta');
+Route::post('/agrega/pregunta', [App\Http\Controllers\ApiRestController::class, 'agregaPregunta'])->name('agrega_pregunta');
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

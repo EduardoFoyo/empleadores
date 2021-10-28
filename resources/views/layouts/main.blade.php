@@ -10,19 +10,29 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="{{ asset('js/main.js') }}" defer></script>
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>z
+
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+
 </head>
 
 <body>
@@ -63,7 +73,7 @@
                     <b></b>
                     <a href="{{route('add_question')}}">
                         <span class="icon">
-                            <ion-icon name="add-outline"></ion-icon>
+                            <ion-icon name="newspaper-outline"></ion-icon>
                         </span>
                         <span class="title">Agregar pregunta</span>
                     </a>
@@ -84,5 +94,7 @@
     </div>
 
 </body>
+
+@stack('scripts')
 
 </html>
