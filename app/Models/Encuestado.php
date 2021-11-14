@@ -16,7 +16,9 @@ class Encuestado extends Model
     
 
     protected $fillable = [
+        'id',
         'nombre',
-        'empresa'
+        'empresa',
+        'puesto',
     ];
 }

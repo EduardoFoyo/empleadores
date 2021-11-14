@@ -19,6 +19,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Auth::routes();
+
 Route::get('/encuesta', function () {
     $preguntas = Pregunta::first();
     return view('poll.poll', ['preguntas' => $preguntas]);
@@ -28,8 +30,6 @@ Route::get('/save/poll', function (Request $request) {
     
 })->name('save_poll');
 
-Auth::routes();
-
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/add', [App\Http\Controllers\HomeController::class, 'addQuestionView'])->name('add_question');
-
+Route::get('/preguntas', [App\Http\Controllers\HomeController::class, 'addQuestionView'])->name('add_question');
+Route::get('/resultado/encuestado/{id}', [App\Http\Controllers\HomeController::class, 'resultadoEncuestado'])->name('resultado_encuestado');

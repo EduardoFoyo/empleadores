@@ -10,21 +10,16 @@
             <div class="card p-5">
                 <div class="row mb-2">
                     <div class="col-sm-11">
-                        <h1>Preguntas</h1>
-                    </div>
-                    <div class="col-sm-1">
-                        <button type="button" id="agregar" class="btn btn-success mb-4 " data-toggle="modal"
-                            data-target="#exampleModalCenter">
-                            <ion-icon style="font-size: 25px; margin-top:8px;" name="add-outline"></ion-icon>
-                        </button>
+                        <h1>{{$encuestado->nombre}}</h1>
+                        <h2>{{$encuestado->empresa}}</h2>
+                        <h2>{{$encuestado->puesto}}</h2>
                     </div>
                 </div>
-                <table id="tabla_preguntas" class="table table-striped" style="width:100%">
+                <table id="tabla_encuestados" class="table table-striped" style="width:100%">
                     <thead>
                         <tr>
                             <th>Pregunta</th>
-                            <th>Area</th>
-                            <th>Tema</th>
+                            <th>Respuesta</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -33,79 +28,35 @@
             </div>
         </div>
     </div>
+    {{-- ----------------------------------------------------- --}}
 </div>
-
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Agregar pregunta</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label class="form-label">Tema de la pregunta</label>
-                    <select class="form-select" id="enviar_tema" name="tema" aria-label="Default select example">
-                        <option selected>Elige un tema</option>
-                        @foreach ($temas as $tema)
-                        <option value="{{$tema->id}}">{{$tema->tema}}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Escribe una pregunta</label>
-                    <input type="text" id="enviar_pregunta" name="pregunta" class="form-control">
-                </div>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" onclick="guardar()" class="btn btn-primary" data-dismiss="modal">Guardar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 @endsection
 
 @push('scripts')
 <script>
     let table;
-    function guardar(params) {
-        $.ajax({
-            type:"POST",
-            url:"{{route('agrega_pregunta')}}",
-            data:{
-                pregunta:$( "#enviar_pregunta" ).val(),
-                tema:$( "#enviar_tema" ).val(),
-                area:{{ Auth::user()->id }}
-            },
-            success:function(datos){
-                table.ajax.reload();
-            },
-        });
-        
-    }
 
     $(function() {
-        table = $('#tabla_preguntas').DataTable({
+        table = $('#tabla_encuestados').DataTable({
             lengthMenu: [[10, 50, 300], [10, 50, 300]],
+            dom: 'Blfrtip',
+            buttons: [
+                 'csv', 'excel', 'pdf'
+            ],
             processing: true,
             serverSide: true,
             responsive: false,  
             searching: true,
             ajax: {
-               "url": '{!! route('lista_pregunta') !!}',
+               "url": '{!! route('lista_respuesta') !!}',
                "type": 'POST',
+                data:{
+                    id_encuestado:"{{$encuestado->id}}",
+                },
             },
             columns:[
                 {data: 'pregunta'},
-                {data: 'id_area'},
-                {data: 'id_tema'},
+                {data: 'respuesta'},
             ],
             order: [[ 0, "desc" ]],
             language: {
@@ -310,9 +261,9 @@
                     }
                 },
                 "info": "Mostrando _START_ a _END_ de _TOTAL_ registros"
-                        },
-                });
+                },
             });
+        });
     
 </script>
 @endpush

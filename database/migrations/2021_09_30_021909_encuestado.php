@@ -17,7 +17,9 @@ class Encuestado extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('empresa');
-            $table->timestamps();
+            $table->string('puesto');
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
         });
     }
 
