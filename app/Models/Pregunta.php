@@ -19,4 +19,15 @@ class Pregunta extends Model
         'id_tema',
         'pregunta'
     ];
+
+    public function area()
+    {
+        return $this->belongsTo('App\Models\Area', 'id_area')->all();
+    }
+
+    public function tema()
+    {
+        return $this->belongsTo('App\Models\Tema', 'id_tema');
+    }
+    
 }

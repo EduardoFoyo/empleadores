@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Pregunta;
+use App\Models\Tema;
 use Illuminate\Http\Request;
 
 /*
@@ -22,8 +23,9 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/encuesta', function () {
+    $tema = Tema::all()->where("id_area", "=", 1);
     $preguntas = Pregunta::first();
-    return view('poll.poll', ['preguntas' => $preguntas]);
+    return view('poll.poll', ['preguntas' => $preguntas,'temas' => $tema]);
 })->name('encuesta');
 
 Route::get('/save/poll', function (Request $request) {

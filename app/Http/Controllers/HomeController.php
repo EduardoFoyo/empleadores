@@ -31,23 +31,13 @@ class HomeController extends Controller
 
     public function addQuestionView()
     {
-        $tema = Tema::all();
+        $tema = Tema::all()->where("id_area",1);
         return view('poll.addquestion', ['temas' => $tema]);
     }
 
     public function resultadoEncuestado(Request $request,$id)
     {
         $encuestado = Encuestado::find($id);
-        // $preguntas = DB::select('SELECT 
-        //                 p.pregunta,r.respuesta
-        //             FROM
-        //                 siaee.respuesta_encuestado re
-        //                 INNER JOIN siaee.encuestado e ON re.id_encuestado = e.id
-        //                 INNER JOIN siaee.respuesta r ON re.id_respuesta = r.id
-        //                 INNER JOIN siaee.pregunta p ON r.id_pregunta = p.id
-        //             WHERE
-        //                 re.id_encuestado = ?', [$id]);
-        // dd($preguntas);
         return view('resultado', ['encuestado' => $encuestado]);
     }
 }

@@ -57,15 +57,16 @@
             </div>
 
         </div>
-
     </div>
 
 </body>
 
 <script>
-    var esatado = null;
+    var esatado = 0;
     var id_encuestado = null;
     var cont_preguntas = 0;
+    var tema_preguntas = 0;
+    var preguntas = [];
 
     $("#empezar").click(() => {
         $.ajax({
@@ -79,13 +80,13 @@
             success:function(response){
                 if (response.success) {
                     id_encuestado = response.id_encuestado;
-                    creapPreguta(response.id_encuestado);
+                    creaPregunta(response.id_encuestado);
                 }
             },
         });
     });
 
-    function creapPreguta(encuestado) {
+    function creaPregunta(encuestado) {
         $.ajax({
             type:"POST",
             url:"{{route('muestra_pregunta')}}",
@@ -160,20 +161,84 @@
     function siguiente() {
         cont_preguntas++;
         if (cont_preguntas < 10 ) {
-            $.ajax({
-                type:"POST",
-                url:"{{route('siguiente_pregunta')}}",
-                data:{
-                    id_pregunta: $( "#id_pregunta" ).val(),
-                    respuesta: esatado,
-                    encuestado: id_encuestado,
-                },
-                success:function(response){
-                    var estado_final_r = estado_final.replace("--pregunta--", response.pregunta.pregunta).replace("--id_pregunta--", response.pregunta.id);
-                    $("#state").html(estado_final_r);
-                },
-            });
+            if (cont_preguntas < 5) {
+                preguntas.push($( "#id_pregunta" ).val());
+                $.ajax({
+                    type:"POST",
+                    url:"{{route('siguiente_pregunta_humanidades')}}",
+                    data:{
+                        id_pregunta: $( "#id_pregunta" ).val(),
+                        respuesta: esatado,
+                        encuestado: id_encuestado,
+                        preguntas: preguntas,
+                    },
+                    success:function(response){
+                        var estado_final_r = estado_final.replace("--pregunta--", response.pregunta.pregunta).replace("--id_pregunta--", response.pregunta.id);
+                        $("#state").html(estado_final_r);
+                        esatado = 0;
+                    },
+                });
+            }else if (cont_preguntas === 5) {
+                $.ajax({
+                    type:"POST",
+                    url:"{{route('siguiente_pregunta_humanidades')}}",
+                    data:{
+                        id_pregunta: $( "#id_pregunta" ).val(),
+                        respuesta: esatado,
+                        encuestado: id_encuestado,
+                        preguntas: preguntas,
+                    },
+                    success:function(response){
+                        $("#state").html(
+                            `<div class="row">
+                            <div class="col s12 m4 l2"></div>
+                            <div class="col s12 m4 l8">
+                                <div class="input-field col s12">
+                                    <input type="hidden" id="id_pregunta" value="-1">
+                                    <p>Area de enfoque del empleado</p>
+                                    <select id="option-select">
+                                        <option disabled selected>Elige un tema</option>
+                                        @foreach ($temas as $tema)
+                                        <option value="{{$tema->id}}">{{$tema->tema}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col s12 m4 l2"></div>
+                        </div>
+                        <div class="text-align: center !important;">
+                            <a onclick="siguiente()" class="waves-effect waves-light btn-large">Siguiente</a>
+                        </div>`
+                        );
+                        $('#option-select').css("display", "block");
+
+                        $( "#option-select" ).change(function() {
+                            tema_preguntas = $("#option-select").val();
+                        });
+                        esatado = 0;
+                    },
+                });
+            }else{
+                preguntas.push($( "#id_pregunta" ).val());
+                $.ajax({
+                    type:"POST",
+                    url:"{{route('siguiente_pregunta')}}",
+                    data:{
+                        id_pregunta: $( "#id_pregunta" ).val(),
+                        respuesta: esatado,
+                        encuestado: id_encuestado,
+                        tema:tema_preguntas,
+                        preguntas: preguntas,
+                    },
+                    success:function(response){
+                        var estado_final_r = estado_final.replace("--pregunta--", response.pregunta.pregunta).replace("--id_pregunta--", response.pregunta.id);
+                        $("#state").html(estado_final_r);
+                        esatado = 0;
+                    },
+                });
+            }
         }else{
+            preguntas.push($( "#id_pregunta" ).val());
             $.ajax({
                 type:"POST",
                 url:"{{route('siguiente_pregunta')}}",
@@ -181,9 +246,11 @@
                     id_pregunta: $( "#id_pregunta" ).val(),
                     respuesta: esatado,
                     encuestado: id_encuestado,
+                    tema:tema_preguntas
                 },
                 success:function(response){
                     $("#state").html(`<h1 style="text-align: center !important;">Gracias por el apoyo</h1>`);
+                    esatado = 0;
                 },
             });
         }

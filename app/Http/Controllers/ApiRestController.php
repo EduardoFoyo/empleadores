@@ -14,7 +14,13 @@ class ApiRestController extends Controller
 {
     public function listaPregunta(Request $request)
     {
-        return Datatables::of(Pregunta::all())->toJson();
+        return Datatables::of(DB::select('SELECT 
+	                                        p.pregunta,a.area,t.tema
+                                        FROM
+                                            siaee.pregunta p
+                                        INNER JOIN siaee.area a ON p.id_area = a.id
+                                        INNER JOIN siaee.tema t ON p.id_tema = t.id
+                                        WHERE p.id_area = "1"'))->toJson();
     }
 
     public function listaEncuestado(Request $request)
@@ -69,14 +75,14 @@ class ApiRestController extends Controller
 
     public function muestraPregunta(Request $request)
     {
-        $pregunta = Pregunta::inRandomOrder()->first();
+        $pregunta = Pregunta::where('id_area',2)->inRandomOrder()->first();
         return response()->json(array(
             "success" => true,
             "pregunta" => $pregunta
         ), 200);
     }
 
-    public function siguientePregunta(Request $request)
+    public function siguientePreguntaHumanidades(Request $request)
     {
         $respuesta = new Respuesta();
         $respuesta->id_pregunta = $request->id_pregunta;
@@ -91,11 +97,53 @@ class ApiRestController extends Controller
         $enc_res->id_respuesta = $id_respuesta;
         $enc_res->save();
 
-        $pregunta = Pregunta::inRandomOrder()->first();
+        $pregunta = Pregunta::where('id_area', 2)
+              ->whereNotIn('id', $request->preguntas)
+              ->inRandomOrder()
+              ->first();
+
         return response()->json(array(
             "success" => true,
             "pregunta" => $pregunta
         ), 200);
     }
 
+    public function siguientePregunta(Request $request)
+    {
+        if ($request->id_pregunta == -1) {
+            $pregunta = Pregunta::where("id_tema", $request->tema)->where("id_area",1)->inRandomOrder()->first();
+            return response()->json(array(
+                "success" => true,
+                "pregunta" => $pregunta
+            ), 200);
+        }
+        
+        $respuesta = new Respuesta();
+        $respuesta->id_pregunta = $request->id_pregunta;
+        $respuesta->respuesta = $request->respuesta;
+        $respuesta->save();
+
+        $aux_respuesta = Respuesta::all();
+        $id_respuesta = $aux_respuesta[count($aux_respuesta)-1]->id;
+
+        $enc_res = new RespuestaEncuestado();
+        $enc_res->id_encuestado = $request->encuestado;
+        $enc_res->id_respuesta = $id_respuesta;
+        $enc_res->save();
+
+        //Aun sin probar
+        //$pregunta = Pregunta::where("id_tema", $request->tema)->where("id_area",1)->inRandomOrder()->first();
+
+        $pregunta = Pregunta::where("id_tema", $request->tema)
+            ->where('id_area', 2)
+            ->whereNotIn('id', $request->preguntas)
+            ->inRandomOrder()
+            ->first();
+
+        return response()->json(array(
+            "success" => true,
+            "pregunta" => $pregunta
+        ), 200);
+    }
+    
 }

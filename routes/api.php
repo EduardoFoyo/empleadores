@@ -20,8 +20,8 @@ Route::post('/lista/respuesta', [App\Http\Controllers\ApiRestController::class, 
 Route::post('/agrega/pregunta', [App\Http\Controllers\ApiRestController::class, 'agregaPregunta'])->name('agrega_pregunta');
 Route::post('/inicia/encuesta', [App\Http\Controllers\ApiRestController::class, 'iniciaEncuesta'])->name('inicia_encuesta');
 Route::post('/muestra/pregunta', [App\Http\Controllers\ApiRestController::class, 'muestraPregunta'])->name('muestra_pregunta');
-Route::post('/muestra/pregunta', [App\Http\Controllers\ApiRestController::class, 'muestraPregunta'])->name('muestra_pregunta');
 Route::post('/siguiente/pregunta', [App\Http\Controllers\ApiRestController::class, 'siguientePregunta'])->name('siguiente_pregunta');
+Route::post('/siguiente/pregunta/humanidades', [App\Http\Controllers\ApiRestController::class, 'siguientePreguntaHumanidades'])->name('siguiente_pregunta_humanidades');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

@@ -2,8 +2,6 @@
 
 @section('content')
 
-
-
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-12">
@@ -104,8 +102,8 @@
             },
             columns:[
                 {data: 'pregunta'},
-                {data: 'id_area'},
-                {data: 'id_tema'},
+                {data: 'area'},
+                {data: 'tema'},
             ],
             order: [[ 0, "desc" ]],
             language: {
