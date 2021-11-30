@@ -18,7 +18,7 @@
 <body>
     <div class="container">
         <div style="width: 100%; text-align: center">
-            <img class="responsive-img" src="{{ asset('img/FotoCabeza.jpg')}}" alt="">
+            <img class="responsive-img" src="{{ asset('img/uaslp.png')}}" alt="">
         </div>
         <div class="card" style="padding:30px">
             <div class="text-align: center !important;">
@@ -29,19 +29,19 @@
                     <div class="col s12 m4 l2"></div>
                     <div class="col s12 m4 l8">
                         <div>
-                            <p>¿Nombre del empleador?</p>
+                            <p>Nombre del empleador:</p>
                             <p>
                                 <label>
                                     <input id="nombre" type="text" />
                                 </label>
                             </p>
-                            <p>¿Nombre de la empresa?</p>
+                            <p>Nombre de la empresa:</p>
                             <p>
                                 <label>
                                     <input id="empresa" type="text" />
                                 </label>
                             </p>
-                            <p>¿Puesto del empleador en la empresa?</p>
+                            <p>Puesto del empleador:</p>
                             <p>
                                 <label>
                                     <input id="puesto" type="text" />
@@ -160,7 +160,7 @@
 
     function siguiente() {
         cont_preguntas++;
-        if (cont_preguntas < 10 ) {
+        if (cont_preguntas < 11 ) {
             if (cont_preguntas < 5) {
                 preguntas.push($( "#id_pregunta" ).val());
                 $.ajax({
@@ -195,7 +195,7 @@
                             <div class="col s12 m4 l8">
                                 <div class="input-field col s12">
                                     <input type="hidden" id="id_pregunta" value="-1">
-                                    <p>Area de enfoque del empleado</p>
+                                    <p>Área de trabajo del empleado</p>
                                     <select id="option-select">
                                         <option disabled selected>Elige un tema</option>
                                         @foreach ($temas as $tema)
@@ -238,6 +238,7 @@
                 });
             }
         }else{
+            console.log("Final");
             preguntas.push($( "#id_pregunta" ).val());
             $.ajax({
                 type:"POST",
@@ -246,10 +247,11 @@
                     id_pregunta: $( "#id_pregunta" ).val(),
                     respuesta: esatado,
                     encuestado: id_encuestado,
-                    tema:tema_preguntas
+                    tema:tema_preguntas,
+                    preguntas: preguntas,
                 },
                 success:function(response){
-                    $("#state").html(`<h1 style="text-align: center !important;">Gracias por el apoyo</h1>`);
+                    $(".card").html(`<h1 style="text-align: center !important;">¡Gracias por el apoyo!</h1>`);
                     esatado = 0;
                 },
             });

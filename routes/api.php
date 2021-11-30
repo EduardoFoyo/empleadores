@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/lista/pregunta', [App\Http\Controllers\ApiRestController::class, 'listaPregunta'])->name('lista_pregunta');
 Route::post('/lista/encuestado', [App\Http\Controllers\ApiRestController::class, 'listaEncuestado'])->name('lista_encuestado');
 Route::post('/lista/respuesta', [App\Http\Controllers\ApiRestController::class, 'listaRespuesta'])->name('lista_respuesta');
+Route::post('/lista/respuesta/pregunta', [App\Http\Controllers\ApiRestController::class, 'listaRespuestaPregunta'])->name('lista_respuesta_pregunta');
 Route::post('/agrega/pregunta', [App\Http\Controllers\ApiRestController::class, 'agregaPregunta'])->name('agrega_pregunta');
 Route::post('/inicia/encuesta', [App\Http\Controllers\ApiRestController::class, 'iniciaEncuesta'])->name('inicia_encuesta');
 Route::post('/muestra/pregunta', [App\Http\Controllers\ApiRestController::class, 'muestraPregunta'])->name('muestra_pregunta');

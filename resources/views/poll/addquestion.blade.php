@@ -21,7 +21,7 @@
                     <thead>
                         <tr>
                             <th>Pregunta</th>
-                            <th>Area</th>
+                            <th>Área</th>
                             <th>Tema</th>
                         </tr>
                     </thead>
@@ -101,7 +101,17 @@
                "type": 'POST',
             },
             columns:[
-                {data: 'pregunta'},
+                { 
+                    data: 'id',
+                    "render": function(data, type, row, meta){
+                        if(type === 'display'){
+                            var url = "{{route('resultado_pregunta', ':data')}}";
+                            url = url.replace(':data', data);
+                            return '<a href="' + url +'">' + row.pregunta + '</a>';
+                        }
+                        return data;
+                    }
+                },
                 {data: 'area'},
                 {data: 'tema'},
             ],

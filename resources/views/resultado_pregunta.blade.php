@@ -10,15 +10,13 @@
             <div class="card p-5">
                 <div class="row mb-2">
                     <div class="col-sm-11">
-                        <h1>{{$encuestado->nombre}}</h1>
-                        <h2>{{$encuestado->empresa}}</h2>
-                        <h3>{{$encuestado->puesto}}</h3>
+                        <h1>{{$pregunta->pregunta}}</h1>
                     </div>
                 </div>
                 <table id="tabla_encuestados" class="table table-striped" style="width:100%">
                     <thead>
                         <tr>
-                            <th>Pregunta</th>
+                            <th>Nombre</th>
                             <th>Respuesta</th>
                         </tr>
                     </thead>
@@ -48,14 +46,24 @@
             responsive: false,  
             searching: true,
             ajax: {
-               "url": '{!! route('lista_respuesta') !!}',
+               "url": '{!! route('lista_respuesta_pregunta') !!}',
                "type": 'POST',
                 data:{
-                    id_encuestado:"{{$encuestado->id}}",
+                    id_pregunta:"{{$pregunta->id}}",
                 },
             },
             columns:[
-                {data: 'pregunta'},
+                { 
+                    data: 'id',
+                    "render": function(data, type, row, meta){
+                        if(type === 'display'){
+                            var url = "{{route('resultado_encuestado', ':data')}}";
+                            url = url.replace(':data', data);
+                            return '<a href="' + url +'">' + row.nombre + '</a>';
+                        }
+                        return data;
+                    }
+                },
                 {data: 'respuesta'},
             ],
             order: [[ 0, "desc" ]],

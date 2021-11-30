@@ -16,7 +16,6 @@
                 <table id="tabla_encuestados" class="table table-striped" style="width:100%">
                     <thead>
                         <tr>
-                            <th>id</th>
                             <th>Nombre</th>
                             <th>Empresa</th>
                             <th>Puesto</th>
@@ -58,12 +57,11 @@
                         if(type === 'display'){
                             var url = "{{route('resultado_encuestado', ':data')}}";
                             url = url.replace(':data', data);
-                            return '<a href="' + url +'">' + data + '</a>';
+                            return '<a href="' + url +'">' + row.nombre + '</a>';
                         }
                         return data;
                     }
                 },
-                {data: 'nombre'},
                 {data: 'empresa'},
                 {data: 'puesto'},
             ],

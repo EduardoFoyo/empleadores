@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Tema;
 use App\Models\Encuestado;
+use App\Models\Pregunta;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -39,5 +40,11 @@ class HomeController extends Controller
     {
         $encuestado = Encuestado::find($id);
         return view('resultado', ['encuestado' => $encuestado]);
+    }
+
+    public function resultadoPregunta(Request $request,$id)
+    {
+        $pregunta = Pregunta::find($id);
+        return view('resultado_pregunta', ['pregunta' => $pregunta]);
     }
 }

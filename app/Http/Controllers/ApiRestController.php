@@ -15,11 +15,11 @@ class ApiRestController extends Controller
     public function listaPregunta(Request $request)
     {
         return Datatables::of(DB::select('SELECT 
-	                                        p.pregunta,a.area,t.tema
+	                                        p.id, p.pregunta,a.area,t.tema
                                         FROM
-                                            siaee.pregunta p
-                                        INNER JOIN siaee.area a ON p.id_area = a.id
-                                        INNER JOIN siaee.tema t ON p.id_tema = t.id
+                                            pregunta p
+                                        INNER JOIN area a ON p.id_area = a.id
+                                        INNER JOIN tema t ON p.id_tema = t.id
                                         WHERE p.id_area = "1"'))->toJson();
     }
 
@@ -33,12 +33,25 @@ class ApiRestController extends Controller
         return Datatables::of(DB::select('SELECT 
                         p.pregunta,r.respuesta
                     FROM
-                        siaee.respuesta_encuestado re
-                        INNER JOIN siaee.encuestado e ON re.id_encuestado = e.id
-                        INNER JOIN siaee.respuesta r ON re.id_respuesta = r.id
-                        INNER JOIN siaee.pregunta p ON r.id_pregunta = p.id
+                        respuesta_encuestado re
+                        INNER JOIN encuestado e ON re.id_encuestado = e.id
+                        INNER JOIN respuesta r ON re.id_respuesta = r.id
+                        INNER JOIN pregunta p ON r.id_pregunta = p.id
                     WHERE
                         re.id_encuestado = ?', [$request->id_encuestado]))->toJson();
+    }
+    
+    public function listaRespuestaPregunta(Request $request)
+    {
+        return Datatables::of(DB::select('SELECT 
+                                e.id, e.nombre,r.respuesta
+                            FROM
+                                respuesta_encuestado re
+                                INNER JOIN encuestado e ON re.id_encuestado = e.id
+                                INNER JOIN respuesta r ON re.id_respuesta = r.id
+                                INNER JOIN pregunta p ON r.id_pregunta = p.id
+                            WHERE
+                                p.id = ?', [$request->id_pregunta]))->toJson();
     }
     
     public function agregaPregunta(Request $request)
@@ -131,15 +144,12 @@ class ApiRestController extends Controller
         $enc_res->id_respuesta = $id_respuesta;
         $enc_res->save();
 
-        //Aun sin probar
-        //$pregunta = Pregunta::where("id_tema", $request->tema)->where("id_area",1)->inRandomOrder()->first();
-
-        $pregunta = Pregunta::where("id_tema", $request->tema)
-            ->where('id_area', 2)
-            ->whereNotIn('id', $request->preguntas)
-            ->inRandomOrder()
-            ->first();
-
+        $pregunta = Pregunta::where('id_area', 1)
+        ->where("id_tema", $request->tema)
+        ->whereNotIn('id', $request->preguntas)
+        ->inRandomOrder()
+        ->first();
+        
         return response()->json(array(
             "success" => true,
             "pregunta" => $pregunta
