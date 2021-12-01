@@ -17,7 +17,8 @@ use Illuminate\Http\Request;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    //return view('welcome');
+    return view('auth.login');
 });
 
 Auth::routes();
@@ -33,6 +34,7 @@ Route::get('/save/poll', function (Request $request) {
 })->name('save_poll');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 Route::get('/preguntas', [App\Http\Controllers\HomeController::class, 'addQuestionView'])->name('add_question');
 Route::get('/resultado/encuestado/{id}', [App\Http\Controllers\HomeController::class, 'resultadoEncuestado'])->name('resultado_encuestado');
 Route::get('/resultado/pregunta/{id}', [App\Http\Controllers\HomeController::class, 'resultadoPregunta'])->name('resultado_pregunta');
