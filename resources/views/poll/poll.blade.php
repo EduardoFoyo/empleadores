@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
     <!-- Compiled and minified JavaScript -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6LdlANseAAAAAE9mKz4wQl7M7IusqV_Az4yWH4Tl"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -16,7 +17,7 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container" style="padding-top:30px">
         <div style="width: 100%; text-align: center">
             <img class="responsive-img" src="{{ asset('img/uaslp.png')}}" alt="">
         </div>
@@ -52,7 +53,7 @@
                     <div class="col s12 m4 l2"></div>
                 </div>
                 <div class="text-align: center !important;">
-                    <a id="empezar" class="waves-effect waves-light btn-large">Empezar</a>
+                    <button type="button" id="empezar" class="waves-effect waves-light btn-large">Empezar</button>
                 </div>
             </div>
 
@@ -60,6 +61,7 @@
     </div>
 
 </body>
+
 
 <script>
     var esatado = 0;
@@ -69,20 +71,31 @@
     var preguntas = [];
 
     $("#empezar").click(() => {
-        $.ajax({
-            type:"POST",
-            url:"{{route('inicia_encuesta')}}",
-            data:{
-                nombre:$( "#nombre" ).val(),
-                empresa:$( "#empresa" ).val(),
-                puesto:$( "#puesto" ).val(),
-            },
-            success:function(response){
-                if (response.success) {
-                    id_encuestado = response.id_encuestado;
-                    creaPregunta(response.id_encuestado);
-                }
-            },
+
+        grecaptcha.ready(function() {
+            grecaptcha.execute('6LdlANseAAAAAE9mKz4wQl7M7IusqV_Az4yWH4Tl',
+            {action: 'submit'}).then(function(token) {
+                
+                $.ajax({
+                    type:"POST",
+                    url:"{{route('inicia_encuesta')}}",
+                    data:{
+                        nombre:$( "#nombre" ).val(),
+                        empresa:$( "#empresa" ).val(),
+                        puesto:$( "#puesto" ).val(),
+                        tokenCaptcha:token
+                    },
+                    success:function(response){
+                        if (response.success) {
+                            id_encuestado = response.id_encuestado;
+                            creaPregunta(response.id_encuestado);
+                        }else{
+                            alert(response.message);
+                        }
+                    },
+                });
+
+            });
         });
     });
 

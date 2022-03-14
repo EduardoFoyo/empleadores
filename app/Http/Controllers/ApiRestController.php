@@ -70,6 +70,31 @@ class ApiRestController extends Controller
 
     public function iniciaEncuesta(Request $request)
     {
+        $tokenSecret = '6LdlANseAAAAAA8hy2f3JjD1cvrEftpgp8qGRoMg';
+
+        $token = $request->tokenCaptcha;
+        $cu = curl_init();
+        curl_setopt($cu, CURLOPT_URL, "https://www.google.com/recaptcha/api/siteverify");
+        curl_setopt($cu, CURLOPT_POST, 1);
+        curl_setopt($cu, CURLOPT_POSTFIELDS, "secret=$tokenSecret&response=$token");
+        curl_setopt($cu, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($cu);
+        curl_close($cu);
+        $result = json_decode($result, true);
+
+        if (!($result['success'] == true && $result['score'] >= 0.5)) {
+             return response()->json(array(
+                "success" => false,
+                "message" => "Captcha no valido"
+            ), 200);
+        }
+
+        $this->validate($request, [
+            'nombre' => 'required|max:255',
+            'empresa' => 'required|max:255',
+            'puesto' => 'required|max:255',
+        ]);
+
         $encuestado = new Encuestado();
         $encuestado->nombre = $request->nombre; 
         $encuestado->empresa = $request->empresa;
@@ -97,6 +122,14 @@ class ApiRestController extends Controller
 
     public function siguientePreguntaHumanidades(Request $request)
     {
+
+        $this->validate($request, [
+            'id_pregunta' => 'required',
+            'respuesta' => 'required',
+            'encuestado' => 'required',
+            'preguntas' => 'required',
+        ]);
+
         $respuesta = new Respuesta();
         $respuesta->id_pregunta = $request->id_pregunta;
         $respuesta->respuesta = $request->respuesta;
@@ -123,6 +156,16 @@ class ApiRestController extends Controller
 
     public function siguientePregunta(Request $request)
     {
+
+        $this->validate($request, [
+            'id_pregunta' => 'required',
+            'tema' => 'required',
+            'respuesta' => 'required',
+            'encuestado' => 'required',
+            'preguntas' => 'required'
+        ]);
+
+
         if ($request->id_pregunta == -1) {
             $pregunta = Pregunta::where("id_tema", $request->tema)->where("id_area",1)->inRandomOrder()->first();
             return response()->json(array(
