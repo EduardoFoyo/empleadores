@@ -15,9 +15,11 @@ class Encuestado extends Migration
     {
         Schema::create('encuestado', function (Blueprint $table) {
             $table->id();
+            $table->string('token_encuestado');
             $table->string('nombre');
             $table->string('empresa');
             $table->string('puesto');
+            $table->boolean('realizado')->default(false);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
         });

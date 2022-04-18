@@ -12,6 +12,12 @@
                     <div class="col-sm-11">
                         <h1>Encuestados</h1>
                     </div>
+                    <div class="col-sm-1">
+                        <button type="button" id="agregar" class="btn btn-success mb-4 " data-toggle="modal"
+                            data-target="#exampleModalCenter">
+                            <ion-icon style="font-size: 25px; margin-top:8px;" name="add-outline"></ion-icon>
+                        </button>
+                    </div>
                 </div>
                 <table id="tabla_encuestados" class="table table-striped" style="width:100%">
                     <thead>
@@ -27,13 +33,43 @@
             </div>
         </div>
     </div>
-    {{-- ----------------------------------------------------- --}}
+</div>
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Generar link de encuestador</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body d-flex ">
+                <button class="btn btn-success col-3" onclick="generarUrl()">Generar</button>
+                <input type="text" id="url" name="url" class="form-control col-9">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
-
 @push('scripts')
 <script>
     let table;
+
+    function generarUrl() {
+        $.ajax({
+            type:"POST",
+            url:"{{route('genera_url')}}",
+            success:function(datos){
+                    var url = "{{route('encuesta', ':data')}}";
+                    url = url.replace(':data', datos.url);
+                    $('#url').val(url);
+            },
+        });
+    }
 
     $(function() {
         table = $('#tabla_encuestados').DataTable({

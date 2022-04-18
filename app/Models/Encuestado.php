@@ -17,8 +17,10 @@ class Encuestado extends Model
 
     protected $fillable = [
         'id',
+        'token_encuestado',
         'nombre',
         'empresa',
         'puesto',
+        'realizado',
     ];
 }

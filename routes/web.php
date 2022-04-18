@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\Pregunta;
 use App\Models\Tema;
+use App\Models\Encuestado;
 use Illuminate\Http\Request;
 
 /*
@@ -22,11 +23,16 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/encuesta', function () {
+Route::get('/encuesta/{token}', function (Request $request,$token) {
+    $encuestado =  Encuestado::where('token_encuestado',$token)->first();
+    if ($encuestado->realizado === 1) {
+        abort(404);
+    }
     $tema = Tema::all()->where("id_area", "=", 1);
     $preguntas = Pregunta::first();
-    return view('poll.poll', ['preguntas' => $preguntas,'temas' => $tema]);
+    return view('poll.poll', ['preguntas' => $preguntas,'temas' => $tema,'token_encuestado' => $token]);
 })->name('encuesta');
+
 
 Route::get('/save/poll', function (Request $request) {
     

@@ -24,6 +24,8 @@ Route::post('/muestra/pregunta', [App\Http\Controllers\ApiRestController::class,
 Route::post('/siguiente/pregunta', [App\Http\Controllers\ApiRestController::class, 'siguientePregunta'])->name('siguiente_pregunta');
 Route::post('/siguiente/pregunta/humanidades', [App\Http\Controllers\ApiRestController::class, 'siguientePreguntaHumanidades'])->name('siguiente_pregunta_humanidades');
 
+Route::post('/genera/url', [App\Http\Controllers\ApiRestController::class, 'generaUrl'])->name('genera_url');
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

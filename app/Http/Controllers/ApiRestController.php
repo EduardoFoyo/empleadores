@@ -9,6 +9,7 @@ use App\Models\Encuestado;
 use App\Models\Respuesta;
 use App\Models\RespuestaEncuestado;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ApiRestController extends Controller
 {
@@ -26,6 +27,21 @@ class ApiRestController extends Controller
     public function listaEncuestado(Request $request)
     {
         return Datatables::of(Encuestado::all())->toJson();
+    }
+
+    public function generaUrl(Request $request)
+    {
+        $encuestado = new Encuestado();
+        $encuestado->token_encuestado = Str::random(32);
+        $encuestado->nombre = ""; 
+        $encuestado->empresa = "";
+        $encuestado->puesto = "";
+        $encuestado->save();
+        $url = $encuestado->token_encuestado;
+        
+        return response()->json(array(
+            "url" => $url
+        ), 200);
     }
 
     public function listaRespuesta(Request $request)
@@ -95,18 +111,14 @@ class ApiRestController extends Controller
             'puesto' => 'required|max:255',
         ]);
 
-        $encuestado = new Encuestado();
+        $encuestado = Encuestado::where('token_encuestado', $request->token_encuestado)->first();
         $encuestado->nombre = $request->nombre; 
         $encuestado->empresa = $request->empresa;
         $encuestado->puesto = $request->puesto;
         $encuestado->save();
 
-        $aux_encuestado = Encuestado::all();
-        $id_encuestado = $aux_encuestado[count($aux_encuestado)-1]->id;
-        
         return response()->json(array(
-            "success" => true,
-            "id_encuestado" => $id_encuestado
+            "success" => true
         ), 200);
 
     }
@@ -122,27 +134,35 @@ class ApiRestController extends Controller
 
     public function siguientePreguntaHumanidades(Request $request)
     {
-
         $this->validate($request, [
             'id_pregunta' => 'required',
             'respuesta' => 'required',
-            'encuestado' => 'required',
+            'token_encuestado' => 'required',
             'preguntas' => 'required',
         ]);
 
+
+        $encuestado = Encuestado::where('token_encuestado',$request->token_encuestado)->first();
+        if ($encuestado->realizado === 1) {
+            return response()->json(array(
+                "success" => false,
+            ), 200);
+        }
+        
+        
         $respuesta = new Respuesta();
         $respuesta->id_pregunta = $request->id_pregunta;
         $respuesta->respuesta = $request->respuesta;
         $respuesta->save();
-
+        
         $aux_respuesta = Respuesta::all();
         $id_respuesta = $aux_respuesta[count($aux_respuesta)-1]->id;
-
+        
         $enc_res = new RespuestaEncuestado();
-        $enc_res->id_encuestado = $request->encuestado;
+        $enc_res->id_encuestado = $encuestado->id;
         $enc_res->id_respuesta = $id_respuesta;
         $enc_res->save();
-
+        
         $pregunta = Pregunta::where('id_area', 2)
               ->whereNotIn('id', $request->preguntas)
               ->inRandomOrder()
@@ -161,9 +181,16 @@ class ApiRestController extends Controller
             'id_pregunta' => 'required',
             'tema' => 'required',
             'respuesta' => 'required',
-            'encuestado' => 'required',
+            'token_encuestado' => 'required',
             'preguntas' => 'required'
         ]);
+
+        $encuestado = Encuestado::where('token_encuestado',$request->token_encuestado)->first();
+        if ($encuestado->realizado === 1) {
+            return response()->json(array(
+                "success" => false,
+            ), 200);
+        }
 
 
         if ($request->id_pregunta == -1) {
@@ -183,9 +210,20 @@ class ApiRestController extends Controller
         $id_respuesta = $aux_respuesta[count($aux_respuesta)-1]->id;
 
         $enc_res = new RespuestaEncuestado();
-        $enc_res->id_encuestado = $request->encuestado;
+        $enc_res->id_encuestado = $encuestado->id;
         $enc_res->id_respuesta = $id_respuesta;
         $enc_res->save();
+
+        $pregunta = RespuestaEncuestado::where("id_encuestado", $encuestado->id)->get();
+
+        if($pregunta->count()===9){
+            $encuestado->realizado = 1;
+            $encuestado->save();
+            return response()->json(array(
+                "success" => true,
+                "pregunta" => null
+            ), 200);
+        }
 
         $pregunta = Pregunta::where('id_area', 1)
         ->where("id_tema", $request->tema)

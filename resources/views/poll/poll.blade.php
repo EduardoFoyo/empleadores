@@ -64,8 +64,8 @@
 
 
 <script>
-    var esatado = 0;
-    var id_encuestado = null;
+    var estado = 0;
+    var token_encuestado = {!! json_encode($token_encuestado) !!};
     var cont_preguntas = 0;
     var tema_preguntas = 0;
     var preguntas = [];
@@ -83,12 +83,12 @@
                         nombre:$( "#nombre" ).val(),
                         empresa:$( "#empresa" ).val(),
                         puesto:$( "#puesto" ).val(),
+                        token_encuestado:token_encuestado,
                         tokenCaptcha:token
                     },
                     success:function(response){
                         if (response.success) {
-                            id_encuestado = response.id_encuestado;
-                            creaPregunta(response.id_encuestado);
+                            creaPregunta();
                         }else{
                             alert(response.message);
                         }
@@ -99,7 +99,7 @@
         });
     });
 
-    function creaPregunta(encuestado) {
+    function creaPregunta() {
         $.ajax({
             type:"POST",
             url:"{{route('muestra_pregunta')}}",
@@ -169,11 +169,11 @@
     </div>` 
 
     
-    function guardaEstado(estado_nuevo) {esatado = estado_nuevo;}
+    function guardaEstado(estado_nuevo) {estado = estado_nuevo;}
 
     function siguiente() {
         cont_preguntas++;
-        if (cont_preguntas < 11 ) {
+        if (cont_preguntas < 10 ) {
             if (cont_preguntas < 5) {
                 preguntas.push($( "#id_pregunta" ).val());
                 $.ajax({
@@ -181,14 +181,14 @@
                     url:"{{route('siguiente_pregunta_humanidades')}}",
                     data:{
                         id_pregunta: $( "#id_pregunta" ).val(),
-                        respuesta: esatado,
-                        encuestado: id_encuestado,
+                        respuesta: estado,
+                        token_encuestado: token_encuestado,
                         preguntas: preguntas,
                     },
                     success:function(response){
                         var estado_final_r = estado_final.replace("--pregunta--", response.pregunta.pregunta).replace("--id_pregunta--", response.pregunta.id);
                         $("#state").html(estado_final_r);
-                        esatado = 0;
+                        estado = 0;
                     },
                 });
             }else if (cont_preguntas === 5) {
@@ -197,8 +197,8 @@
                     url:"{{route('siguiente_pregunta_humanidades')}}",
                     data:{
                         id_pregunta: $( "#id_pregunta" ).val(),
-                        respuesta: esatado,
-                        encuestado: id_encuestado,
+                        respuesta: estado,
+                        token_encuestado: token_encuestado,
                         preguntas: preguntas,
                     },
                     success:function(response){
@@ -228,7 +228,7 @@
                         $( "#option-select" ).change(function() {
                             tema_preguntas = $("#option-select").val();
                         });
-                        esatado = 0;
+                        estado = 0;
                     },
                 });
             }else{
@@ -238,34 +238,33 @@
                     url:"{{route('siguiente_pregunta')}}",
                     data:{
                         id_pregunta: $( "#id_pregunta" ).val(),
-                        respuesta: esatado,
-                        encuestado: id_encuestado,
+                        respuesta: estado,
+                        token_encuestado: token_encuestado,
                         tema:tema_preguntas,
                         preguntas: preguntas,
                     },
                     success:function(response){
                         var estado_final_r = estado_final.replace("--pregunta--", response.pregunta.pregunta).replace("--id_pregunta--", response.pregunta.id);
                         $("#state").html(estado_final_r);
-                        esatado = 0;
+                        estado = 0;
                     },
                 });
             }
         }else{
-            console.log("Final");
             preguntas.push($( "#id_pregunta" ).val());
             $.ajax({
                 type:"POST",
                 url:"{{route('siguiente_pregunta')}}",
                 data:{
                     id_pregunta: $( "#id_pregunta" ).val(),
-                    respuesta: esatado,
-                    encuestado: id_encuestado,
+                    respuesta: estado,
+                    token_encuestado: token_encuestado,
                     tema:tema_preguntas,
                     preguntas: preguntas,
                 },
                 success:function(response){
                     $(".card").html(`<h1 style="text-align: center !important;">¡Gracias por el apoyo!</h1>`);
-                    esatado = 0;
+                    estado = 0;
                 },
             });
         }
